@@ -1,0 +1,14 @@
+{
+  "name": "fcc-voting-app",
+  "version": "1.0.0",
+  "description": "Free Code Camp Voting App",
+  "main": "server.js",
+  "author": "Jordan Carney",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "koa": "^1.2.4"
+  }
+}
