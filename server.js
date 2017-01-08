@@ -1,26 +1,24 @@
 'use-strict'
 
 const app = require('koa')()
+const serve = require('koa-static')
+const Pug = require('koa-pug')
+const pug = new Pug({
+  viewPath: './views',
+  debug: false,
+  pretty: false,
+  compileDebug: false,
+  locals: '',
+  app: app,
+})
 
-// app.use(function *() {
-//   this.body = 'Hello World!'
-// })
-
-app.use(function *(next) {
-  this.body = 'A'
-  yield next;
-  this.body = 'E'
-});
-
-app.use(function *(next) {
-  this.body = 'B'
-  yield next;
-  this.body = 'D'
-});
+app.use(serve('./public'))
 
 app.use(function *(next) {
-  this.body = 'C'
-});
+  if (this.request.path !== '/' && this.request.method === 'GET') return yield next
+  //this.body = 'Hello World!'
+  this.render('home')
+})
 
 const server = app.listen(5000, () => {
   console.log('Koa is listening, shhh... 5000')

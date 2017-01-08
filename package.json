@@ -9,6 +9,8 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
-    "koa": "^1.2.4"
+    "koa": "^1.2.4",
+    "koa-pug": "^3.0.0-1",
+    "koa-static": "^2.0.0"
   }
 }
