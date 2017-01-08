@@ -15,9 +15,19 @@ const pug = new Pug({
 app.use(serve('./public'))
 
 app.use(function *(next) {
-  if (this.request.path !== '/' && this.request.method === 'GET') return yield next
-  //this.body = 'Hello World!'
-  this.render('home')
+  if (this.request.path === '/' && this.request.method === 'GET') {
+    this.render('home')
+  } else {
+    yield next
+  }
+})
+
+app.use(function *(next) {
+  if (this.request.path === '/login' && this.request.method === 'GET') {
+    this.render('login')
+  } else {
+    yield next
+  }
 })
 
 const server = app.listen(5000, () => {

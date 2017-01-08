@@ -1,0 +1,27 @@
+extends ../base
+
+block append body
+    h2.header.center Login
+
+    form(method="post")
+      .input-field
+        i.material-icons.prefix
+          | account_circle
+        input(
+          type="text"
+          placeholder="User Name"
+          name="username"
+          required="true"
+        )
+
+      .input-field
+        i.material-icons.prefix
+          | lock
+        input(
+          type="text"
+          placeholder="Password"
+          name="password"
+          require="true"
+        )
+
+      button(type="submit") Login
