@@ -30,6 +30,14 @@ app.use(function *(next) {
   }
 })
 
+app.use(function *(next) {
+  if (this.request.path === '/register' && this.request.method === 'GET') {
+    this.render('register')
+  } else {
+    yield next
+  }
+})
+
 const server = app.listen(5000, () => {
   console.log('Koa is listening, shhh... 5000')
 })
