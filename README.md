@@ -10,7 +10,7 @@
   - [ ] Login Page
   - [ ] Logout Page
   - [ ] Register Page
-- [ ] Setup Mongo
+- [x] Setup Mongo/Mongoose
 
 ## User Stories
 - [ ] As an authenticated user, I can keep my polls and come back later to access them.
