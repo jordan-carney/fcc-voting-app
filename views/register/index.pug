@@ -3,6 +3,8 @@ extends ../base
 block append body
     h2.header.center Register
 
+    p #{error}
+
     form(method="post")
       .row
         .input-field.col.s6
@@ -11,17 +13,17 @@ block append body
           input(
             type="text"
             placeholder="First Name"
-            name="firstname"
+            name="firstName"
             required="true"
           )
-          label(for="firstname")
+          label(for="firstName")
             | Name
 
         .input-field.col.s6
           input(
             type="text"
             placeholder="Last Name"
-            name="lastname"
+            name="lastName"
             required="true"
           )
 
@@ -45,4 +47,4 @@ block append body
           require="true"
         )
 
-      button(type="submit") Login
+      button.btn(type="submit") Register
