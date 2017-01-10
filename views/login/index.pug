@@ -3,6 +3,9 @@ extends ../base
 block append body
     h2.header.center Login
 
+    if (error)
+      p #{error}
+
     form(method="post")
       .input-field
         i.material-icons.prefix

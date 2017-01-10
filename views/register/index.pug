@@ -3,7 +3,8 @@ extends ../base
 block append body
     h2.header.center Register
 
-    p #{error}
+    if (error)
+      p #{error}
 
     form(method="post")
       .row
@@ -31,11 +32,14 @@ block append body
         i.material-icons.prefix
           | mail
         input(
+          id="email"
           type="text"
           placeholder="Email Address"
           name="email"
           require="true"
         )
+        if (error)
+          label(for="email" data-wrong=error)
 
       .input-field
         i.material-icons.prefix

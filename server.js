@@ -47,6 +47,23 @@ app.use(function *(next) {
   } else {
     yield next
   }
+
+  if (this.request.path === '/login' && this.request.method === 'POST') {
+    try {
+      let user = yield User.findOne({ email: this.request.body.email })
+      if (!user) {
+        this.render('login', { error: 'Incorrect email / password.' })
+      } else {
+        if (this.request.body.password === user.password) {
+          this.redirect('/')
+        } else {
+          this.render('login', { error: 'Incorrect email / password.' })
+        }
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
 })
 
 app.use(function *(next) {
