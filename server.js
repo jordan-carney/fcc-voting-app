@@ -32,7 +32,7 @@ mongoose.connect(process.env.MONGO_URL, {})
 // MIDDLEWARE
 app.use(serve('./public'))
 app.use(bodyParser())
-app.keys = ['Shh, its a secret!']
+app.keys = [process.env.SESSION_SECRET]
 app.use(session(app))
 
 // ROUTES
@@ -59,6 +59,7 @@ app.use(function *(next) {
       } else {
         if (this.request.body.password === user.password) {
           this.session.user = user
+          delete this.session.user.password
           this.redirect('/')
         } else {
           this.render('login', { error: 'Incorrect email / password.' })
