@@ -4,6 +4,7 @@ if ( process.env.NODE_ENV !== 'production' ) require('dotenv').config()
 const mongoose = require('mongoose')
 const app = require('koa')()
 const bodyParser = require('koa-bodyparser')
+const session = require('koa-session')
 const serve = require('koa-static')
 const Pug = require('koa-pug')
 const pug = new Pug({
@@ -31,11 +32,13 @@ mongoose.connect(process.env.MONGO_URL, {})
 // MIDDLEWARE
 app.use(serve('./public'))
 app.use(bodyParser())
+app.keys = ['Shh, its a secret!']
+app.use(session(app))
 
 // ROUTES
 app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'GET') {
-    this.render('home')
+    this.render('home', { user: this.session.user })
   } else {
     yield next
   }
@@ -55,6 +58,7 @@ app.use(function *(next) {
         this.render('login', { error: 'Incorrect email / password.' })
       } else {
         if (this.request.body.password === user.password) {
+          this.session.user = user
           this.redirect('/')
         } else {
           this.render('login', { error: 'Incorrect email / password.' })
@@ -64,6 +68,14 @@ app.use(function *(next) {
       console.log(err)
     }
   }
+})
+
+app.use(function *(next) {
+  if (this.request.path === '/logout' && this.request.method === 'GET') {
+    this.session = null
+    this.redirect('/')
+  }
+  yield next
 })
 
 app.use(function *(next) {
