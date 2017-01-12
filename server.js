@@ -2,6 +2,7 @@
 
 if ( process.env.NODE_ENV !== 'production' ) require('dotenv').config()
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const app = require('koa')()
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
@@ -57,7 +58,7 @@ app.use(function *(next) {
       if (!user) {
         this.render('login', { error: 'Incorrect email / password.' })
       } else {
-        if (this.request.body.password === user.password) {
+        if (bcrypt.compareSync(this.request.body.password, user.password)) {
           this.session.user = user
           delete this.session.user.password
           this.redirect('/')
@@ -90,15 +91,20 @@ app.use(function *(next) {
 app.use(function *(next) {
   if (this.request.path === '/register' && this.request.method === 'POST') {
 
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(this.request.body.password, salt)
+
     const user = new User({
       firstName: this.request.body.firstName,
       lastName: this.request.body.lastName,
       email: this.request.body.email,
-      password: this.request.body.password,
+      password: hash,
     })
 
     try {
       yield user.save()
+      this.session.user = user
+      delete this.session.user.password
       this.redirect('/')
     } catch(err) {
       let error = 'ERROR! Please try again.'
