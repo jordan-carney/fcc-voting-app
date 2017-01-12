@@ -91,9 +91,7 @@ app.use(function *(next) {
 app.use(function *(next) {
   if (this.request.path === '/register' && this.request.method === 'POST') {
 
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(this.request.body.password, salt)
-
+    const hash = yield bcrypt.hash(this.request.body.password, 10)
     const user = new User({
       firstName: this.request.body.firstName,
       lastName: this.request.body.lastName,
