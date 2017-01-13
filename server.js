@@ -7,6 +7,7 @@ const app = require('koa')()
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
 const serve = require('koa-static')
+const csrf = require('koa-csrf')
 const Pug = require('koa-pug')
 const pug = new Pug({
   viewPath: './views',
@@ -35,6 +36,8 @@ app.use(serve('./public'))
 app.use(bodyParser())
 app.keys = [process.env.SESSION_SECRET]
 app.use(session(app))
+csrf(app)
+app.use(csrf.middleware)
 
 // ROUTES
 app.use(function *(next) {
@@ -47,7 +50,7 @@ app.use(function *(next) {
 
 app.use(function *(next) {
   if (this.request.path === '/login' && this.request.method === 'GET') {
-    this.render('login')
+    this.render('login', { csrfToken: this.csrf })
   } else {
     yield next
   }
@@ -56,14 +59,20 @@ app.use(function *(next) {
     try {
       let user = yield User.findOne({ email: this.request.body.email })
       if (!user) {
-        this.render('login', { error: 'Incorrect email / password.' })
+        this.render('login', {
+          error: 'Incorrect email / password.',
+          csrfToken: this.csrf
+        })
       } else {
         if (bcrypt.compareSync(this.request.body.password, user.password)) {
           this.session.user = user
           delete this.session.user.password
           this.redirect('/')
         } else {
-          this.render('login', { error: 'Incorrect email / password.' })
+          this.render('login', {
+            error: 'Incorrect email / password.',
+            csrfToken: this.csrf
+          })
         }
       }
     } catch(err) {
@@ -82,7 +91,7 @@ app.use(function *(next) {
 
 app.use(function *(next) {
   if (this.request.path === '/register' && this.request.method === 'GET') {
-    this.render('register')
+    this.render('register', { csrfToken: this.csrf })
   } else {
     yield next
   }
@@ -111,7 +120,10 @@ app.use(function *(next) {
         error = 'That email is already taken, please try again.'
       }
 
-      this.render('register', { error: error })
+      this.render('register', {
+        error: error,
+        csrfToken: this.csrf
+      })
     }
   }
 })

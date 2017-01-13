@@ -7,6 +7,12 @@ block append body
       p #{error}
 
     form(method="post")
+      input(
+        type="hidden"
+        name="_csrf"
+        value=csrfToken
+      )
+      
       .input-field
         i.material-icons.prefix
           | account_circle

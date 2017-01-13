@@ -8,6 +8,12 @@ block append body
 
     form(method="post")
       .row
+        input(
+          type="hidden"
+          name="_csrf"
+          value=csrfToken
+        )
+
         .input-field.col.s6
           i.material-icons.prefix
             | account_circle
