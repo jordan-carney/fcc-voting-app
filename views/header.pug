@@ -1,16 +1,41 @@
 header
-  .container
-    .brand
-      a(href="/")
-        h1 Votely
-        img(src="")
+  nav.blue-grey
+    .nav-wrapper.container
 
-    .login
-      if (user)
-        a(href="/logout")
-          | Logout
-      else
-        a.btn(href="/login")
-          | Login
-        a(href="/register")
-          | Register
+      a.brand-logo(href="/")
+        | Votely
+      a.button-collapse(href="#" data-activates="mobile-demo")
+        i.material-icons
+          | menu
+
+      ul#nav-mobile.login.right.hide-on-med-and-down
+        if (user)
+          li
+            a(href="/account")
+              | Account
+          li
+            a(href="/logout")
+              | Logout
+        else
+          li
+            a(href="/register")
+              | Register
+          li
+            a.btn.light-blue(href="/login")
+              | Login
+
+      ul#mobile-demo.side-nav
+        if (user)
+          li
+            a(href="/account")
+              | Account
+          li
+            a(href="/logout")
+              | Logout
+        else
+          li
+            a(href="/register")
+              | Register
+          li
+            a.btn.light-blue(href="/login")
+              | Login

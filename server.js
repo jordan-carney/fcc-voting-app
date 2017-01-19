@@ -82,6 +82,13 @@ app.use(function *(next) {
 })
 
 app.use(function *(next) {
+  if (this.request.path === '/account' && this.request.method === 'GET' && this.session.user) {
+    this.render('account', { user: this.session.user })
+  }
+  yield next
+})
+
+app.use(function *(next) {
   if (this.request.path === '/logout' && this.request.method === 'GET') {
     this.session = null
     this.redirect('/')

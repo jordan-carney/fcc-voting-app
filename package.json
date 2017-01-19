@@ -5,6 +5,9 @@
   "main": "server.js",
   "author": "Jordan Carney",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon -e js,pug,css server.js"
+  },
   "devDependencies": {
     "nodemon": "^1.11.0"
   },
