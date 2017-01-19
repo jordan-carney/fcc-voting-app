@@ -2,14 +2,14 @@
 
 ## TODO
 - [ ] Setup User Authentication
-  - [ ] Client Sessions
-  - [ ] Cookies (security concerns)
-  - [ ] Hash Passwords
-  - [ ] Cross-Site Request Forgery defense
+  - [x] Client Sessions
+  - [x] Cookies (security concerns)
+  - [x] Hash Passwords
+  - [x] Cross-Site Request Forgery defense
   - [ ] SSL (Heroku?)
-  - [ ] Login Page
-  - [ ] Logout Page
-  - [ ] Register Page
+  - [x] Login Page
+  - [x] Logout Page
+  - [x] Register Page
 - [x] Setup Mongo/Mongoose
 
 ## User Stories
