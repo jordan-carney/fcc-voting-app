@@ -1,9 +1,15 @@
 body {
-   display: flex;
-   min-height: 100vh;
-   flex-direction: column;
- }
+  background-color: #f1f5f8;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
 
- main {
-   flex: 1 0 auto;
- }
+main {
+  flex: 1 0 auto;
+}
+
+ul.inner-side-nav {
+  margin-top: 1.78rem;
+  padding: 10px;
+}

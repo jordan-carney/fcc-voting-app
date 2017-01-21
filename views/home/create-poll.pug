@@ -1,0 +1,56 @@
+extends ../base
+
+block append body
+
+  .row
+    aside.col.s3
+      ul.inner-side-nav
+        li
+          a(href="/create-poll")
+            | Create New Poll
+        li
+          a(href="/view-polls")
+            | View My Polls
+
+    .col.s9
+      h2.header Create Poll
+
+      if (error)
+        p #{error}
+
+      form(method="post")
+        .row
+          input(
+            type="hidden"
+            name="_csrf"
+            value=csrfToken
+          )
+
+          .input-field
+            input(
+              type="text"
+              name="title"
+              required="true"
+            )
+            label(for="title")
+              | Title
+
+          .input-field
+            input(
+              type="text"
+              name="option"
+              require="true"
+            )
+            label(for="option")
+              | Option
+              
+          .input-field
+            input(
+              type="text"
+              name="option"
+              require="true"
+            )
+            label(for="option")
+              | Option
+
+          button.btn.light-blue(type="submit") Create Poll

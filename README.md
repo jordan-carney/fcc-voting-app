@@ -13,7 +13,7 @@
 - [x] Setup Mongo/Mongoose
 
 ## User Stories
-- [ ] As an authenticated user, I can keep my polls and come back later to access them.
+- [x] As an authenticated user, I can keep my polls and come back later to access them.
 - [ ] As an authenticated user, I can share my polls with my friends.
 - [ ] As an authenticated user, I can see the aggregate results of my polls.
 - [ ] As an authenticated user, I can delete polls that I decide I don't want anymore.

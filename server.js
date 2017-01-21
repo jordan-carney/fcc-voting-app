@@ -28,6 +28,19 @@ const User = mongoose.model('User', new Schema ({
   email: { type: String, unique: true },
   password: String
 }))
+const Poll = mongoose.model('Poll', new Schema ({
+  id: ObjectId,
+  pollTitle: String,
+  pollOptions: [
+    {
+      title: String,
+      votes: Number
+    }
+  ],
+  pollCreator: String,
+  pollCreatedDate: Date,
+  //pollExpires: Date
+}))
 mongoose.Promise = global.Promise
 mongoose.connect(process.env.MONGO_URL, {})
 
@@ -42,10 +55,52 @@ app.use(csrf.middleware)
 // ROUTES
 app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'GET') {
-    this.render('home', { user: this.session.user })
+    if (!this.session.user) {
+      this.render('home')
+    } else {
+      const userPolls = yield Poll.find({ pollCreator: this.session.user })
+      this.render('home/dashboard', { user: this.session.user, userPolls: userPolls })
+    }
   } else {
     yield next
   }
+})
+
+app.use(function *(next) {
+  if (this.request.path === '/create-poll' && this.request.method === 'GET' && this.session.user) {
+    this.render('home/create-poll', { user: this.session.user, csrfToken: this.csrf })
+  }
+
+  if (this.request.path === '/create-poll' && this.request.method === 'POST' && this.session.user) {
+    const options = this.request.body.option.map( function(option) {
+      return {
+        title: option,
+        votes: 0
+      }
+    })
+
+    const poll = new Poll ({
+      pollTitle: this.request.body.title,
+      pollOptions: options,
+      pollCreator: this.session.user,
+      pollCreatedDate: new Date()
+    })
+
+    try {
+      yield poll.save()
+      this.redirect('/')
+    } catch(err) {
+      let error = 'ERROR! Please try again.'
+
+      this.render('home/create-poll', {
+        user: this.session.user,
+        error: error,
+        csrfToken: this.csrf
+      })
+    }
+  }
+  
+  yield next
 })
 
 app.use(function *(next) {
