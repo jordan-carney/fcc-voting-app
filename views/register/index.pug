@@ -14,47 +14,40 @@ block append body
           value=csrfToken
         )
 
-        .input-field.col.s6
+        .input-field
           i.material-icons.prefix
             | account_circle
           input(
             type="text"
-            placeholder="First Name"
-            name="firstName"
+            name="username"
             required="true"
           )
-          label(for="firstName")
-            | Name
+          label(for="username")
+            | Username
 
-        .input-field.col.s6
+        .input-field
+          i.material-icons.prefix
+            | mail
           input(
-            type="text"
-            placeholder="Last Name"
-            name="lastName"
-            required="true"
+            id="email"
+            type="email"
+            name="email"
+            require="true"
           )
+          label(for="email")
+            | Email Address
+          if (error)
+            label(for="email" data-wrong=error)
 
-      .input-field
-        i.material-icons.prefix
-          | mail
-        input(
-          id="email"
-          type="text"
-          placeholder="Email Address"
-          name="email"
-          require="true"
-        )
-        if (error)
-          label(for="email" data-wrong=error)
-
-      .input-field
-        i.material-icons.prefix
-          | lock
-        input(
-          type="password"
-          placeholder="Password"
-          name="password"
-          require="true"
-        )
+        .input-field
+          i.material-icons.prefix
+            | lock
+          input(
+            type="password"
+            name="password"
+            require="true"
+          )
+          label(for="password")
+            | Password
 
       button.btn.light-blue(type="submit") Register

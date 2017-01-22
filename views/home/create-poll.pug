@@ -3,14 +3,8 @@ extends ../base
 block append body
 
   .row
-    aside.col.s3
-      ul.inner-side-nav
-        li
-          a(href="/create-poll")
-            | Create New Poll
-        li
-          a(href="/view-polls")
-            | View My Polls
+   
+    include inner-side-nav
 
     .col.s9
       h2.header Create Poll

@@ -1,8 +1,28 @@
 extends ../base
 
 block append body
-  .jumbtron
-    h2.header.center Start Voting
+  
+  h2.center Polls
 
-  .random-poll
-    p Random Poll to Load Here
+  if (openPolls)
+    .card.white
+      .card-content
+        span.card-title #{openPolls.title}
+        p Creator: #{openPolls.createdBy}
+        form(method="post")
+          input(
+            type="hidden"
+            name="_csrf"
+            value=csrfToken
+          )
+          input(
+            type="hidden"
+            name="pollID"
+            value=openPolls._id
+          )
+          each option, i in openPolls.options
+            .input-field
+              input(name="vote" value=option.title type="radio" id='option-'+i )
+              label(for='option-'+i) #{option.title}
+      .card-action
+        button.btn#submit-vote Submit Vote

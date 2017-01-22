@@ -13,3 +13,22 @@ ul.inner-side-nav {
   margin-top: 1.78rem;
   padding: 10px;
 }
+
+ul.inner-side-nav li {
+  border-bottom: 1px solid #e3e3e3;
+  padding: 8px 0;
+}
+
+ul.inner-side-nav li a {
+  color: #000;
+}
+
+ul.inner-side-nav li a:hover {
+  color: #039be5;
+}
+
+ul.inner-side-nav li a i {
+  margin-right: 10px;
+  margin-bottom: 2px;
+  vertical-align: middle;
+}

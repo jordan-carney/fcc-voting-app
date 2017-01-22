@@ -23,22 +23,21 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
 const User = mongoose.model('User', new Schema ({
   id: ObjectId,
-  firstName: String,
-  lastName: String,
+  userName: String,
   email: { type: String, unique: true },
   password: String
 }))
 const Poll = mongoose.model('Poll', new Schema ({
   id: ObjectId,
-  pollTitle: String,
-  pollOptions: [
+  title: String,
+  options: [
     {
       title: String,
       votes: Number
     }
   ],
-  pollCreator: String,
-  pollCreatedDate: Date,
+  createdBy: String,
+  createdDate: Date
   //pollExpires: Date
 }))
 mongoose.Promise = global.Promise
@@ -56,14 +55,30 @@ app.use(csrf.middleware)
 app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'GET') {
     if (!this.session.user) {
-      this.render('home')
+      const openPolls = yield Poll.findOne()
+      this.render('home', { 
+        openPolls: openPolls,
+        csrfToken: this.csrf 
+      })
     } else {
-      const userPolls = yield Poll.find({ pollCreator: this.session.user })
+      const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
       this.render('home/dashboard', { user: this.session.user, userPolls: userPolls })
     }
-  } else {
-    yield next
   }
+
+  if (this.request.path === '/' && this.request.method === 'POST') {
+    const pollID = this.request.body.pollID
+    const vote = this.request.body.vote
+    yield Poll.update({_id: pollID, 'options.title': vote}, {$inc: {'options.$.votes': 1}})
+    //Redirect to that polls dedicated page
+    const openPolls = yield Poll.findOne()
+    this.render('home', {
+      openPolls: openPolls,
+      csrfToken: this.csrf
+    })
+  }
+  
+  yield next
 })
 
 app.use(function *(next) {
@@ -72,6 +87,7 @@ app.use(function *(next) {
   }
 
   if (this.request.path === '/create-poll' && this.request.method === 'POST' && this.session.user) {
+    
     const options = this.request.body.option.map( function(option) {
       return {
         title: option,
@@ -80,10 +96,10 @@ app.use(function *(next) {
     })
 
     const poll = new Poll ({
-      pollTitle: this.request.body.title,
-      pollOptions: options,
-      pollCreator: this.session.user,
-      pollCreatedDate: new Date()
+      title: this.request.body.title,
+      options: options,
+      createdBy: this.session.user.userName,
+      createdDate: new Date()
     })
 
     try {
@@ -106,8 +122,6 @@ app.use(function *(next) {
 app.use(function *(next) {
   if (this.request.path === '/login' && this.request.method === 'GET') {
     this.render('login', { csrfToken: this.csrf })
-  } else {
-    yield next
   }
 
   if (this.request.path === '/login' && this.request.method === 'POST') {
@@ -134,12 +148,15 @@ app.use(function *(next) {
       console.log(err)
     }
   }
+
+  yield next
 })
 
 app.use(function *(next) {
   if (this.request.path === '/account' && this.request.method === 'GET' && this.session.user) {
     this.render('account', { user: this.session.user })
   }
+
   yield next
 })
 
@@ -148,15 +165,16 @@ app.use(function *(next) {
     this.session = null
     this.redirect('/')
   }
+
   yield next
 })
 
 app.use(function *(next) {
   if (this.request.path === '/register' && this.request.method === 'GET') {
     this.render('register', { csrfToken: this.csrf })
-  } else {
-    yield next
   }
+  
+  yield next
 })
 
 app.use(function *(next) {
@@ -164,8 +182,7 @@ app.use(function *(next) {
 
     const hash = yield bcrypt.hash(this.request.body.password, 10)
     const user = new User({
-      firstName: this.request.body.firstName,
-      lastName: this.request.body.lastName,
+      userName: this.request.body.username,
       email: this.request.body.email,
       password: hash,
     })
@@ -188,7 +205,17 @@ app.use(function *(next) {
       })
     }
   }
+  
+  yield next
 })
+
+/*
+app.use(function *(next) {
+  console.log(this.request.url)
+  this.body = 'catch!'
+  yield next
+})
+*/
 
 const server = app.listen(5000, () => {
   console.log('Koa is listening, shhh... 5000')

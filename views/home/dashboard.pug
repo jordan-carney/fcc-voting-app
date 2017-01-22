@@ -3,18 +3,11 @@ extends ../base
 block append body
 
   .row
-    aside.col.s3
-      ul.inner-side-nav
-        li
-          a(href="/create-poll")
-            | Create New Poll
-        li
-          a(href="/view-polls")
-            | View My Polls
+
+    include inner-side-nav
 
     .col.s9
       h2.header Active Polls
-
       if (!userPolls.length) 
         p It doesn't look like you have any polls yet. Get started by 
           a(href="/create-poll")
@@ -22,7 +15,12 @@ block append body
           |.      
       else
         each poll in userPolls
-          .card-panel.white
-            h5 #{poll.pollTitle}
-            each option in poll.pollOptions
-              p #{option.title} - #{option.votes}
+          .card.white
+            .card-content
+              span.card-title #{poll.title}
+              each option in poll.options
+                p #{option.title} - #{option.votes}
+            .card-action
+              a(href="#") Edit Poll
+              a(href="#") Share Poll
+              a.right.red-text.text-darken-1(href="#") Delete Poll
