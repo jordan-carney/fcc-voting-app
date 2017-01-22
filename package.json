@@ -18,6 +18,7 @@
     "koa-bodyparser": "^2.3.0",
     "koa-csrf": "2.x",
     "koa-pug": "^3.0.0-1",
+    "koa-router": "5.4",
     "koa-session": "^3.4.0",
     "koa-static": "^2.0.0",
     "mongoose": "^4.7.6"

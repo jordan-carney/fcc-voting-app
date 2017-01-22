@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const app = require('koa')()
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
+const router = require('koa-router')()
 const serve = require('koa-static')
 const csrf = require('koa-csrf')
 const Pug = require('koa-pug')
@@ -50,6 +51,8 @@ app.keys = [process.env.SESSION_SECRET]
 app.use(session(app))
 csrf(app)
 app.use(csrf.middleware)
+app.use(router.routes())
+app.use(router.allowedMethods())
 
 // ROUTES
 app.use(function *(next) {
@@ -70,7 +73,7 @@ app.use(function *(next) {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote
     yield Poll.update({_id: pollID, 'options.title': vote}, {$inc: {'options.$.votes': 1}})
-    //Redirect to that polls dedicated page
+    //Redirect to that poll's dedicated page
     const openPolls = yield Poll.findOne()
     this.render('home', {
       openPolls: openPolls,
@@ -209,13 +212,36 @@ app.use(function *(next) {
   yield next
 })
 
-/*
-app.use(function *(next) {
-  console.log(this.request.url)
-  this.body = 'catch!'
+router.get('/:user', function *(next) {
+  const polls = yield Poll.find({ createdBy: new RegExp('^' + this.params.user + '$', 'i') })
+  if (polls.length) {
+    this.render('poll-list/user', {
+      csrfToken: this.csrf,
+      polls: polls
+    })
+  }
+
   yield next
 })
-*/
+
+router.get('/:user/:pollName', function *(next) {
+  try {
+    const isValidUser = yield User.findOne({ userName: this.params.user })
+    const thePoll = yield Poll.findOne({ title: this.params.pollName, createdBy: new RegExp('^' + this.params.user + '$', 'i') })
+    this.render('poll-list/single', { 
+      csrfToken: this.csrf,
+      poll: thePoll 
+    })
+  } catch (err) {
+    console.log(err)
+    this.redirect('/')
+  }
+  
+  yield next
+})
+
+// TODO
+// router.post('/:user/:pollName', function *(next) {})
 
 const server = app.listen(5000, () => {
   console.log('Koa is listening, shhh... 5000')

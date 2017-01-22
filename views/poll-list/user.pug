@@ -1,0 +1,28 @@
+extends ../base
+
+block append body
+
+  h2.center.header Polls by #{polls[0].createdBy}
+
+  each poll in polls
+    .card.white
+      .card-content
+        span.card-title #{poll.title}
+        p Creator: #{poll.createdBy}
+        form(method="post")
+          input(
+            type="hidden"
+            name="_csrf"
+            value=csrfToken
+          )
+          input(
+            type="hidden"
+            name="pollID"
+            value=poll._id
+          )
+          each option, i in poll.options
+            .input-field
+              input(name="vote" value=option.title type="radio" id='option-'+i )
+              label(for='option-'+i) #{option.title}
+      .card-action
+        button.btn#submit-vote Submit Vote
