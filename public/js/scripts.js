@@ -1,8 +1,24 @@
 $(document).ready(function() {
   $('.button-collapse').sideNav()
 
-  document.querySelector('#submit-vote').addEventListener('click', function() {
-    this.parentNode.parentNode.querySelector('form').submit()
-  })
+  var submitVote = document.querySelector('#submit-vote')
+  var deletePoll = document.querySelectorAll('.delete-poll')
+
+  if (submitVote) {
+    submitVote.forEach( function(button) {
+      button.addEventListener('click', function() {
+        this.parentNode.parentNode.querySelector('form').submit()
+      })
+    })
+  }
+
+  if (deletePoll) {
+    deletePoll.forEach( function(link) {
+      link.addEventListener('click', function() {
+        console.log(this)
+        this.parentNode.querySelector('form').submit()
+      })
+    })
+  }
 
 })

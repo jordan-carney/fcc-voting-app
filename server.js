@@ -65,7 +65,11 @@ app.use(function *(next) {
       })
     } else {
       const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
-      this.render('home/dashboard', { user: this.session.user, userPolls: userPolls })
+      this.render('home/dashboard', {
+        csrfToken: this.csrf,
+        user: this.session.user, 
+        userPolls: userPolls
+      })
     }
   }
 
@@ -90,7 +94,7 @@ app.use(function *(next) {
   }
 
   if (this.request.path === '/create-poll' && this.request.method === 'POST' && this.session.user) {
-    
+    console.log(this.request.body)
     const options = this.request.body.option.map( function(option) {
       return {
         title: option,
@@ -209,6 +213,17 @@ app.use(function *(next) {
     }
   }
   
+  yield next
+})
+
+router.post('/delete-poll', function *(next) {
+  try {
+    yield Poll.findByIdAndRemove(this.request.body.pollID).remove()
+    this.redirect('/')
+  } catch (err) {
+    console.log(err)
+  }
+
   yield next
 })
 
