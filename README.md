@@ -14,6 +14,7 @@ https://jc-fcc-vote.herokuapp.com/
   - [x] Logout Page
   - [x] Register Page
 - [x] Setup Mongo/Mongoose
+- [ ] Ensure user password hash is not sent to front end
 
 ## User Stories
 - [x] As an authenticated user, I can keep my polls and come back later to access them.
