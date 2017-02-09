@@ -1,12 +1,15 @@
 # Free Code Camp - Voting app
 
+**Demo**
+https://jc-fcc-vote.herokuapp.com/
+
 ## TODO
 - [ ] Setup User Authentication
   - [x] Client Sessions
   - [x] Cookies (security concerns)
   - [x] Hash Passwords
   - [x] Cross-Site Request Forgery defense
-  - [ ] SSL (Heroku?)
+  - [x] SSL (Heroku?)
   - [x] Login Page
   - [x] Logout Page
   - [x] Register Page
