@@ -10,6 +10,7 @@ const router = require('koa-router')()
 const serve = require('koa-static')
 const csrf = require('koa-csrf')
 const Pug = require('koa-pug')
+
 const pug = new Pug({
   viewPath: './views',
   debug: false,
@@ -142,7 +143,8 @@ app.use(function *(next) {
       } else {
         if (bcrypt.compareSync(this.request.body.password, user.password)) {
           this.session.user = user
-          delete this.session.user.password
+          delete this.session.user.password //This is not working to persist through the redirect/other views...
+          console.log('AFTER: ' + this.session.user)
           this.redirect('/')
         } else {
           this.render('login', {
@@ -202,7 +204,7 @@ app.use(function *(next) {
     } catch(err) {
       let error = 'ERROR! Please try again.'
 
-      if(err.code === 11000) {
+      if (err.code === 11000) {
         error = 'That email is already taken, please try again.'
       }
 
@@ -258,6 +260,6 @@ router.get('/:user/:pollName', function *(next) {
 // TODO
 // router.post('/:user/:pollName', function *(next) {})
 
-const server = app.listen(5000, () => {
+const server = app.listen((process.env.PORT || 5000), () => {
   console.log('Koa is listening, shhh... 5000')
 })

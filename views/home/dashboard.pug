@@ -7,6 +7,7 @@ block append body
     include inner-side-nav
 
     .col.s9
+      p #{JSON.stringify(user)}
       h2.header Active Polls
       if (!userPolls.length) 
         p It doesn't look like you have any polls yet. Get started by 
@@ -22,7 +23,7 @@ block append body
                 p #{option.title} - #{option.votes}
             .card-action(data-poll=poll._id)
               a(href="#") Edit Poll
-              a(href="#") Share Poll
+              a(href='/' + user.userName + '/' + poll.title) Share Poll
               a.right.red-text.text-darken-1.delete-poll(href="javascript:void(0);" title="Delete Poll") Delete Poll
               form(method="POST" action="/delete-poll")
                 input(

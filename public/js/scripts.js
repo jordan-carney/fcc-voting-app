@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $('.button-collapse').sideNav()
 
-  var submitVote = document.querySelector('#submit-vote')
+  var submitVote = document.querySelectorAll('#submit-vote')
   var deletePoll = document.querySelectorAll('.delete-poll')
 
   if (submitVote) {
