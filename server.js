@@ -3,13 +3,13 @@
 if ( process.env.NODE_ENV !== 'production' ) require('dotenv').config()
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const app = require('koa')()
-const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
+const bodyParser = require('koa-bodyparser')
 const router = require('koa-router')()
 const serve = require('koa-static')
 const csrf = require('koa-csrf')
 const Pug = require('koa-pug')
+const app = require('koa')()
 
 const pug = new Pug({
   viewPath: './views',
@@ -27,7 +27,7 @@ const User = mongoose.model('User', new Schema ({
   id: ObjectId,
   userName: String,
   email: { type: String, unique: true },
-  password: String
+  password: { type: String, select: false }
 }))
 const Poll = mongoose.model('Poll', new Schema ({
   id: ObjectId,
@@ -134,7 +134,7 @@ app.use(function *(next) {
 
   if (this.request.path === '/login' && this.request.method === 'POST') {
     try {
-      let user = yield User.findOne({ email: this.request.body.email })
+      let user = yield User.findOne({ email: this.request.body.email }, '+password').lean()
       if (!user) {
         this.render('login', {
           error: 'Incorrect email / password.',
@@ -142,9 +142,18 @@ app.use(function *(next) {
         })
       } else {
         if (bcrypt.compareSync(this.request.body.password, user.password)) {
+          /* TEACHABLE MOMENT!
+          Mongoose does not return a regular js object! Objective: Do not send password property to front end.
+
+          1) Set password field in the Model to select: false. Default query will never return this property, unless specifically
+             called (ex: '+password') as an argument after the query.
+          2) Convert the returned MongooseDocument to a raw object with .toObject() OR chain .lean() on to the query.
+             ----
+             this.session.user = user.toObject();
+             ----
+          */
           this.session.user = user
-          delete this.session.user.password //This is not working to persist through the redirect/other views...
-          console.log('AFTER: ' + this.session.user)
+          delete this.session.user.password
           this.redirect('/')
         } else {
           this.render('login', {
@@ -251,9 +260,22 @@ router.get('/:user/:pollName', function *(next) {
     })
   } catch (err) {
     console.log(err)
-    this.redirect('/')
   }
   
+  yield next
+})
+
+router.post('/:user/:pollName', function *(next) {
+  try {
+    const pollID = this.request.body.pollID
+    const vote = this.request.body.vote
+    yield Poll.update({_id: pollID, 'options.title': vote}, {$inc: {'options.$.votes': 1}})
+    //Redirect to that poll's dedicated page
+    this.redirect('/' + this.params.user + '/' + this.params.pollName)
+  } catch(err) {
+    console.log(err)
+  }
+
   yield next
 })
 
