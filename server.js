@@ -91,11 +91,14 @@ app.use(function *(next) {
 
 app.use(function *(next) {
   if (this.request.path === '/create-poll' && this.request.method === 'GET' && this.session.user) {
-    this.render('home/create-poll', { user: this.session.user, csrfToken: this.csrf })
+    this.render('poll/create-poll', { 
+      user: this.session.user, 
+      csrfToken: this.csrf 
+    })
   }
 
   if (this.request.path === '/create-poll' && this.request.method === 'POST' && this.session.user) {
-    console.log(this.request.body)
+
     const options = this.request.body.option.map( function(option) {
       return {
         title: option,
@@ -116,12 +119,42 @@ app.use(function *(next) {
     } catch(err) {
       let error = 'ERROR! Please try again.'
 
-      this.render('home/create-poll', {
+      this.render('poll/create-poll', {
         user: this.session.user,
         error: error,
         csrfToken: this.csrf
       })
     }
+  }
+  
+  yield next
+})
+
+router.post('/edit-poll', function *(next) {
+  try {
+    const poll = yield Poll.findById(this.request.body.pollID)
+    this.render('poll/edit-poll', {
+      user: this.session.user,
+      poll: poll,
+      csrfToken: this.csrf
+    })
+  } catch (err) {
+    console.error(err)
+  }
+
+  yield next
+})
+
+router.post('/update-poll', function *(next) {
+  try {
+    const formData = {
+      title: this.request.body.title,
+      options: this.request.body.options.map( option => ({ title: option, votes: 0 }))
+    }
+    yield Poll.findByIdAndUpdate(this.request.body.pollID, formData)
+    this.redirect('/')
+  } catch (err) {
+    console.error(err)
   }
   
   yield next

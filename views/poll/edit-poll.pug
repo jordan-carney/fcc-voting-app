@@ -1,0 +1,61 @@
+extends ../base
+
+block append body
+
+  .row
+   
+    include ../home/inner-side-nav
+
+    .col.s9
+      h2.header Edit Poll
+      //- TODO ADD WARNING TO EDIT VIEW
+      //- .card-panel.yellow.lighten-4
+      //-   span.amber-text.text-darken-3
+      //-     .material-icons(aria-hidden="true") info_outline
+      //-     | Warning: submitting edits will reset your poll vote counts.
+
+      if (error)
+        p #{error}
+
+      form(method="post" action="/update-poll")
+        .row
+          input(
+            type="hidden"
+            name="_csrf"
+            value=csrfToken
+          )
+
+          input(
+            type="hidden"
+            name="pollID"
+            value=poll._id
+          )
+
+          .input-field
+            input(
+              type="text"
+              name="title"
+              value=poll.title
+              required="true"
+            )
+            label(for="title")
+              | Title
+          
+          each option in poll.options
+            .input-field
+              input(
+                type="text"
+                name="options"
+                value=option.title
+                require="true"
+              )
+              input(
+                type="hidden"
+                name="votes"
+                value=option.votes
+                require="true"
+              )
+              label(for="option")
+                | Option
+
+          button.btn.light-blue(type="submit") Edit Poll

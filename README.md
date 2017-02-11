@@ -4,7 +4,7 @@
 https://jc-fcc-vote.herokuapp.com/
 
 ## TODO
-- [ ] Setup User Authentication
+- [x] Setup User Authentication
   - [x] Client Sessions
   - [x] Cookies (security concerns)
   - [x] Hash Passwords
@@ -14,7 +14,9 @@ https://jc-fcc-vote.herokuapp.com/
   - [x] Logout Page
   - [x] Register Page
 - [x] Setup Mongo/Mongoose
-- [ ] Ensure user password hash is not sent to front end
+- [x] Ensure user password hash is not sent to front end
+- [ ] As an authenticated user, I can delete my account
+- [ ] As an authenticated user, I can edit any of my existing polls
 
 ## User Stories
 - [x] As an authenticated user, I can keep my polls and come back later to access them.
