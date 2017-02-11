@@ -7,7 +7,6 @@ block append body
     include inner-side-nav
 
     .col.s9
-      p #{JSON.stringify(user)}
       h2.header Active Polls
       if (!userPolls.length) 
         p It doesn't look like you have any polls yet. Get started by 
