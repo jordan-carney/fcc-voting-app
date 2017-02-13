@@ -149,11 +149,13 @@ router.post('/edit-poll', function *(next) {
   yield next
 })
 
+// TODO : move this to private middleware behind data check in /edit-poll route
 router.post('/update-poll', function *(next) {
   try {
     const formData = {
       title: this.request.body.title,
-      options: this.request.body.options.map( option => ({ title: option, votes: 0 }))
+      options: this.request.body.options.map( option => ({ title: option, votes: 0 })),
+      voters: []
     }
     yield Poll.findByIdAndUpdate(this.request.body.pollID, formData)
     this.redirect('/')
