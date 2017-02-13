@@ -32,3 +32,13 @@ ul.inner-side-nav li a i {
   margin-bottom: 2px;
   vertical-align: middle;
 }
+
+.warning {
+  margin-bottom: 40px;
+}
+
+.warning .material-icons {
+  margin-top: -4px;
+  margin-right: 4px;
+  vertical-align: middle;
+}

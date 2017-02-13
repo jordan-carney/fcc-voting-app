@@ -9,13 +9,11 @@ block append body
     .col.s9
       h2.header Edit Poll
 
-      //- TODO ADD WARNING TO EDIT VIEW
-      //- .card-panel.yellow.lighten-4
-      //-   span.amber-text.text-darken-3
-      //-     .material-icons(aria-hidden="true") info_outline
-      //-     | Warning: submitting edits will reset your poll vote counts.
-      //-
-
+      .card-panel.yellow.lighten-4
+        span.amber-text.text-darken-3
+          .material-icons(aria-hidden="true") info_outline
+          | Warning: submitting edits will reset your poll vote counts.
+      
       if (error)
         p #{error}
 
