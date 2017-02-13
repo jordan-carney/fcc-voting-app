@@ -8,6 +8,8 @@ block append body
     .card.white
       .card-content
         span.card-title #{openPolls.title}
+        //- TODO Change card display depending on hasVoted status
+        p Has Voted: #{hasVoted}
         p Creator: #{openPolls.createdBy}
         form(method="post")
           input(

@@ -16,7 +16,8 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] Setup Mongo/Mongoose
 - [x] Ensure user password hash is not sent to front end
 - [ ] As an authenticated user, I can delete my account
-- [ ] As an authenticated user, I can edit any of my existing polls
+- [x] As an authenticated user, I can edit any of my existing polls
+- [ ] As an unauthenticated or authenticated user, I can only vote once in a poll
 
 ## User Stories
 - [x] As an authenticated user, I can keep my polls and come back later to access them.

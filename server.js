@@ -39,8 +39,8 @@ const Poll = mongoose.model('Poll', new Schema ({
     }
   ],
   createdBy: String,
-  createdDate: Date
-  //pollExpires: Date
+  createdDate: Date,
+  voters: [ String ]
 }))
 mongoose.Promise = global.Promise
 mongoose.connect(process.env.MONGO_URL, {})
@@ -60,8 +60,11 @@ app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'GET') {
     if (!this.session.user) {
       const openPolls = yield Poll.findOne()
+      const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
+      console.log(hasVoted)
       this.render('home', { 
         openPolls: openPolls,
+        hasVoted: hasVoted,
         csrfToken: this.csrf 
       })
     } else {
@@ -77,7 +80,8 @@ app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'POST') {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote
-    yield Poll.update({_id: pollID, 'options.title': vote}, {$inc: {'options.$.votes': 1}})
+    const ipAddress = this.request.ip
+    yield Poll.update({_id: pollID, 'options.title': vote }, {$inc: {'options.$.votes': 1}, $push: {'voters': ipAddress}})
     //Redirect to that poll's dedicated page
     const openPolls = yield Poll.findOne()
     this.render('home', {
