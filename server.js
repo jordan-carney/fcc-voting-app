@@ -61,11 +61,10 @@ app.use(function *(next) {
     if (!this.session.user) {
       const openPolls = yield Poll.findOne()
       const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
-      console.log(hasVoted)
       this.render('home', { 
         openPolls: openPolls,
         hasVoted: hasVoted,
-        csrfToken: this.csrf 
+        csrfToken: this.csrf
       })
     } else {
       const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
@@ -81,11 +80,13 @@ app.use(function *(next) {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote
     const ipAddress = this.request.ip
-    yield Poll.update({_id: pollID, 'options.title': vote }, {$inc: {'options.$.votes': 1}, $push: {'voters': ipAddress}})
+    yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
     //Redirect to that poll's dedicated page
     const openPolls = yield Poll.findOne()
+    const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
     this.render('home', {
       openPolls: openPolls,
+      hasVoted: hasVoted,
       csrfToken: this.csrf
     })
   }
