@@ -65,8 +65,8 @@ app.use(function *(next) {
       var xip = this.headers["x-forwarded-for"];
       if (xip){
         console.log("CAUGH X-FORWARDED IP")
-        ipAddress = ipAddress.split(",");
-        ipAddress = ipAddress[ipAddress.length-1];
+        ipAddress = xip.split(",");
+        ipAddress = xip[xip.length-1];
       }
         console.log(ipAddress)
       const hasVoted = openPolls.voters.some( ip => ipAddress === ip)
