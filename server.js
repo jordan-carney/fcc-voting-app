@@ -60,7 +60,16 @@ app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'GET') {
     if (!this.session.user) {
       const openPolls = yield Poll.findOne()
-      const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
+      let ipAddress = this.request.ip
+      console.log(this.headers)
+      var xip = this.headers["x-forwarded-for"];
+      if (xip){
+        console.log("CAUGH X-FORWARDED IP")
+        ipAddress = ipAddr.split(",");
+        ipAddress = list[list.length-1];
+      }
+        console.log(ipAddress)
+      const hasVoted = openPolls.voters.some( ip => ipAddress === ip)
       this.render('home', { 
         openPolls: openPolls,
         hasVoted: hasVoted,
@@ -79,7 +88,7 @@ app.use(function *(next) {
   if (this.request.path === '/' && this.request.method === 'POST') {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote
-    const ipAddress = this.request.ip
+    let ipAddress = this.request.ip
     yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
     //Redirect to that poll's dedicated page
     const openPolls = yield Poll.findOne()
