@@ -56,97 +56,101 @@ app.use(router.routes())
 app.use(router.allowedMethods())
 
 // ROUTES
-app.use(function *(next) {
-  if (this.request.path === '/' && this.request.method === 'GET') {
-    if (!this.session.user) {
-      
-      let ipAddress = this.request.ip
-      const xip = this.headers["x-forwarded-for"];
-      if (xip){
-        ipAddress = xip
-      }
-
-      const openPolls = yield Poll.findOne()
-      const hasVoted = openPolls.voters.some( ip => ipAddress === ip)
-      this.render('home', { 
-        openPolls: openPolls,
-        hasVoted: hasVoted,
-        csrfToken: this.csrf
-      })
-    } else {
-      const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
-      this.render('home/dashboard', {
-        csrfToken: this.csrf,
-        user: this.session.user, 
-        userPolls: userPolls
-      })
-    }
-  }
-
-  if (this.request.path === '/' && this.request.method === 'POST') {
-    const pollID = this.request.body.pollID
-    const vote = this.request.body.vote
-
+router.get('/', function *(next) {
+  if (!this.session.user) { 
     let ipAddress = this.request.ip
     const xip = this.headers["x-forwarded-for"];
-      if (xip){
-        ipAddress = xip
-      }
+    if (xip){
+      ipAddress = xip
+    }
 
-    yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
-    //Redirect to that poll's dedicated page
     const openPolls = yield Poll.findOne()
-    const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
-    this.render('home', {
+    const hasVoted = openPolls.voters.some( ip => ipAddress === ip)
+    this.render('home', { 
       openPolls: openPolls,
       hasVoted: hasVoted,
       csrfToken: this.csrf
     })
+  } else {
+    const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
+    this.render('home/dashboard', {
+      csrfToken: this.csrf,
+      user: this.session.user, 
+      userPolls: userPolls
+    })
   }
-  
+
   yield next
 })
 
-app.use(function *(next) {
-  if (this.request.path === '/create-poll' && this.request.method === 'GET' && this.session.user) {
+
+router.post('/', function *(next) {
+  const pollID = this.request.body.pollID
+  const vote = this.request.body.vote
+
+  let ipAddress = this.request.ip
+  const xip = this.headers["x-forwarded-for"];
+    if (xip){
+      ipAddress = xip
+    }
+
+  yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
+  //Redirect to that poll's dedicated page
+  const openPolls = yield Poll.findOne()
+  const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
+  this.render('home', {
+    openPolls: openPolls,
+    hasVoted: hasVoted,
+    csrfToken: this.csrf
+  })
+
+  yield next
+})
+
+
+router.get('/create-poll', function *(next) {
+  if (this.session.user) {
     this.render('poll/create-poll', { 
       user: this.session.user, 
       csrfToken: this.csrf 
     })
   }
 
-  if (this.request.path === '/create-poll' && this.request.method === 'POST' && this.session.user) {
-
-    const options = this.request.body.option.map( function(option) {
-      return {
-        title: option,
-        votes: 0
-      }
-    })
-
-    const poll = new Poll ({
-      title: this.request.body.title,
-      options: options,
-      createdBy: this.session.user.userName,
-      createdDate: new Date()
-    })
-
-    try {
-      yield poll.save()
-      this.redirect('/')
-    } catch(err) {
-      let error = 'ERROR! Please try again.'
-
-      this.render('poll/create-poll', {
-        user: this.session.user,
-        error: error,
-        csrfToken: this.csrf
-      })
-    }
-  }
-  
   yield next
 })
+
+
+router.post('/create-poll', function *(next) {
+  const options = this.request.body.option.map( function(option) {
+    return {
+      title: option,
+      votes: 0
+    }
+  })
+
+  const poll = new Poll ({
+    title: this.request.body.title,
+    options: options,
+    createdBy: this.session.user.userName,
+    createdDate: new Date()
+  })
+
+  try {
+    yield poll.save()
+    this.redirect('/')
+  } catch(err) {
+    let error = 'ERROR! Please try again.'
+
+    this.render('poll/create-poll', {
+      user: this.session.user,
+      error: error,
+      csrfToken: this.csrf
+    })
+  }
+
+  yield next  
+})
+
 
 router.post('/edit-poll', function *(next) {
   try {
@@ -180,65 +184,67 @@ router.post('/update-poll', function *(next) {
   yield next
 })
 
-app.use(function *(next) {
-  if (this.request.path === '/login' && this.request.method === 'GET') {
-    this.render('login', { 
-      csrfToken: this.csrf 
-    })
-  }
 
-  if (this.request.path === '/login' && this.request.method === 'POST') {
-    try {
-      let user = yield User.findOne({ email: this.request.body.email }, '+password').lean()
-      if (!user) {
+router.get('/login', function *(next) {
+  this.render('login', { 
+    csrfToken: this.csrf 
+  })
+
+  yield next
+})
+
+
+router.post('/login', function *(next) {
+  try {
+    let user = yield User.findOne({ email: this.request.body.email }, '+password').lean()
+    if (!user) {
+      this.render('login', {
+        error: 'Incorrect email / password.',
+        csrfToken: this.csrf
+      })
+    } else {
+      if (bcrypt.compareSync(this.request.body.password, user.password)) {
+        /* TEACHABLE MOMENT!
+        Mongoose does not return a regular js object! Objective: Do not send password property to front end.
+
+        1) Set password field in the Model to select: false. Default query will never return this property, unless specifically
+            called (ex: '+password') as an argument after the query.
+        2) Convert the returned MongooseDocument to a raw object with .toObject() OR chain .lean() on to the query.
+            ----
+            this.session.user = user.toObject();
+            ----
+        */
+        this.session.user = user
+        delete this.session.user.password
+        this.redirect('/')
+      } else {
         this.render('login', {
           error: 'Incorrect email / password.',
           csrfToken: this.csrf
         })
-      } else {
-        if (bcrypt.compareSync(this.request.body.password, user.password)) {
-          /* TEACHABLE MOMENT!
-          Mongoose does not return a regular js object! Objective: Do not send password property to front end.
-
-          1) Set password field in the Model to select: false. Default query will never return this property, unless specifically
-             called (ex: '+password') as an argument after the query.
-          2) Convert the returned MongooseDocument to a raw object with .toObject() OR chain .lean() on to the query.
-             ----
-             this.session.user = user.toObject();
-             ----
-          */
-          this.session.user = user
-          delete this.session.user.password
-          this.redirect('/')
-        } else {
-          this.render('login', {
-            error: 'Incorrect email / password.',
-            csrfToken: this.csrf
-          })
-        }
       }
-    } catch(err) {
-      console.log(err)
     }
+  } catch(err) {
+    console.log(err)
   }
 
   yield next
 })
 
-app.use(function *(next) {
-  if (this.request.path === '/account' && this.request.method === 'GET') {
-    if (this.session.user) {
-      this.render('account', {
-        csrfToken: this.csrf,
-        user: this.session.user 
-      })
-    } else {
-      this.redirect('/')
-    }
+
+router.get('/account', function *(next) {
+  if (this.session.user) {
+    this.render('account', {
+      csrfToken: this.csrf,
+      user: this.session.user 
+    })
+  } else {
+    this.redirect('/')
   }
 
   yield next
 })
+
 
 router.post('/account', function *(next) {
   try {
@@ -248,56 +254,57 @@ router.post('/account', function *(next) {
   } catch (err) {
     console.log(err)
   }
+
+  yield next
 })
 
-app.use(function *(next) {
-  if (this.request.path === '/logout' && this.request.method === 'GET') {
-    this.session = null
+
+router.get('/logout', function *(next) {
+  this.session = null
+  this.redirect('/')
+
+  yield next
+})
+
+
+router.get('/register', function *(next) {
+  this.render('register', { 
+    csrfToken: this.csrf 
+  })
+
+  yield next
+}) 
+
+
+router.post('/register', function *(next) {
+  const hash = yield bcrypt.hash(this.request.body.password, 10)
+  const user = new User({
+    userName: this.request.body.username,
+    email: this.request.body.email,
+    password: hash,
+  })
+
+  try {
+    yield user.save()
+    this.session.user = user.toObject();
+    delete this.session.user.password
     this.redirect('/')
-  }
+  } catch(err) {
+    let error = 'ERROR! Please try again.'
 
-  yield next
-})
-
-app.use(function *(next) {
-  if (this.request.path === '/register' && this.request.method === 'GET') {
-    this.render('register', { csrfToken: this.csrf })
-  }
-  
-  yield next
-})
-
-app.use(function *(next) {
-  if (this.request.path === '/register' && this.request.method === 'POST') {
-
-    const hash = yield bcrypt.hash(this.request.body.password, 10)
-    const user = new User({
-      userName: this.request.body.username,
-      email: this.request.body.email,
-      password: hash,
-    })
-
-    try {
-      yield user.save()
-      this.session.user = user.toObject();
-      delete this.session.user.password
-      this.redirect('/')
-    } catch(err) {
-      let error = 'ERROR! Please try again.'
-
-      if (err.code === 11000) {
-        error = 'That email is already taken, please try again.'
-      }
-
-      this.render('register', {
-        error: error,
-        csrfToken: this.csrf
-      })
+    if (err.code === 11000) {
+      error = 'That email is already taken, please try again.'
     }
+
+    this.render('register', {
+      error: error,
+      csrfToken: this.csrf
+    })
   }
   
   yield next
 })
+
 
 router.post('/delete-poll', function *(next) {
   try {
@@ -310,6 +317,7 @@ router.post('/delete-poll', function *(next) {
   yield next
 })
 
+
 router.get('/:user', function *(next) {
   const polls = yield Poll.find({ createdBy: new RegExp('^' + this.params.user + '$', 'i') })
   if (polls.length) {
@@ -321,6 +329,7 @@ router.get('/:user', function *(next) {
 
   yield next
 })
+
 
 router.get('/:user/:pollName', function *(next) {
   try {
@@ -336,6 +345,7 @@ router.get('/:user/:pollName', function *(next) {
   
   yield next
 })
+
 
 router.post('/:user/:pollName', function *(next) {
   try {
@@ -353,6 +363,7 @@ router.post('/:user/:pollName', function *(next) {
 
 // API ENDPOINTS
 
+
 router.get('/api/poll-results/:pollId', function *(next) {
   if (this.params.pollId.match(/^[0-9a-fA-F]{24}$/)) { // Need to ensure Mongoose ID format to prevent casting errors on bad queries
     try{
@@ -369,6 +380,7 @@ router.get('/api/poll-results/:pollId', function *(next) {
 
   yield next
 })
+
 
 // TODO
 // router.post('/:user/:pollName', function *(next) {})
