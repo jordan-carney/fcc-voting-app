@@ -182,7 +182,9 @@ router.post('/update-poll', function *(next) {
 
 app.use(function *(next) {
   if (this.request.path === '/login' && this.request.method === 'GET') {
-    this.render('login', { csrfToken: this.csrf })
+    this.render('login', { 
+      csrfToken: this.csrf 
+    })
   }
 
   if (this.request.path === '/login' && this.request.method === 'POST') {
@@ -224,11 +226,28 @@ app.use(function *(next) {
 })
 
 app.use(function *(next) {
-  if (this.request.path === '/account' && this.request.method === 'GET' && this.session.user) {
-    this.render('account', { user: this.session.user })
+  if (this.request.path === '/account' && this.request.method === 'GET') {
+    if (this.session.user) {
+      this.render('account', {
+        csrfToken: this.csrf,
+        user: this.session.user 
+      })
+    } else {
+      this.redirect('/')
+    }
   }
 
   yield next
+})
+
+router.post('/account', function *(next) {
+  try {
+    yield User.findOneAndRemove({ userName: this.session.user.userName })
+    this.session = null
+    this.redirect('/')
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 app.use(function *(next) {
@@ -260,7 +279,7 @@ app.use(function *(next) {
 
     try {
       yield user.save()
-      this.session.user = user
+      this.session.user = user.toObject();
       delete this.session.user.password
       this.redirect('/')
     } catch(err) {

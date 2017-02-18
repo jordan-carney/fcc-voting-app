@@ -33,11 +33,53 @@ $(document).ready(function() {
     })
   }
 
-  const pollId = document.querySelector('#test').getAttribute('data-src')
+  if (window.location.pathname === '/account') {
+    const deleteAccount = document.querySelector('#delete-account')
+    if (deleteAccount) {
+      deleteAccount.addEventListener('click', function() {
+        const form = document.querySelector('form')
+        form.action = '/account'
+        form.submit()
+      })
+    }
+  }
 
-  fetch('/api/poll-results/' + pollId)
-    .then( response => response.json() )
-    .then( data => graphResults(data) )
+  // Add/Remove Options during poll creation and editing
+  if (window.location.pathname === '/create-poll' || window.location.pathname === '/edit-poll') {
+    const addOption = document.querySelector('#addOption')
+    const delOption = document.querySelector('#delOption')
+
+    addOption.addEventListener('click', function() {
+      const options = document.querySelectorAll('.option')
+      if(options.length === 10 ) addOption.classList.add('hide')
+      if(options.length < 10) {
+        delOption.classList.remove('hide')
+        const lastOption = options[options.length - 1]
+        const newOption = lastOption.cloneNode(true)
+        lastOption.after(newOption)
+      }
+    })
+    
+    delOption.addEventListener('click', function() {
+      const options = document.querySelectorAll('.option')
+      if(options.length === 2) delOption.classList.add('hide')
+      if(options.length > 1) {
+        addOption.classList.remove('hide')
+        const lastOption = options[options.length - 1]
+        lastOption.parentNode.removeChild(lastOption)
+      }
+    })
+  }
+
+  // Render bar chart for poll results
+  let pollId = document.querySelector('#test')
+  if (pollId) {
+    pollId = pollId.getAttribute('data-src')
+
+    fetch('/api/poll-results/' + pollId)
+      .then( response => response.json() )
+      .then( data => graphResults(data) )
+  }
 
   function graphResults(data) {
     const ctx = document.getElementById("test")

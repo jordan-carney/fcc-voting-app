@@ -6,4 +6,10 @@ block append body
   p Email: #{user.email}
   p.bold Danger
   p
-    a(href='#') Delete Account
+    button.btn#delete-account Delete Account
+  form(method="post")
+    input(
+      type="hidden"
+      name="_csrf"
+      value=csrfToken
+    )

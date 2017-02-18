@@ -16,7 +16,12 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] Setup Mongo/Mongoose
 - [x] Ensure user password hash is not sent to front end
 - [x] Add endpoint for front-end to fetch poll-results data
-- [ ] As an authenticated user, I can delete my account
+- [ ] Style add and remove option buttons
+- [ ] Only whole numbers on Y-axis of Bar Charts
+- [ ] Tweak background coloring
+- [ ] Expand poll list on home Page
+- [ ] Paginate expanded poll list on home Page
+- [x] As an authenticated user, I can delete my account
 - [x] As an authenticated user, I can edit any of my existing polls
 - [x] As an unauthenticated or authenticated user, I can only vote once in a poll
 
@@ -25,7 +30,7 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] As an authenticated user, I can share my polls with my friends.
 - [x] As an authenticated user, I can see the aggregate results of my polls.
 - [x] As an authenticated user, I can delete polls that I decide I don't want anymore.
-- [ ] As an authenticated user, I can create a poll with any number of possible items.
+- [x] As an authenticated user, I can create a poll with any number of possible items.
 - [ ] As an unauthenticated or authenticated user, I can see and vote on everyone's polls.
 - [x] As an unauthenticated or authenticated user, I can see the results of polls in chart form. (This could be implemented using Chart.js or Google Charts.)
-- [ ] As an authenticated user, if I don't like the options on a poll, I can create a new option.
+- [x] As an authenticated user, if I don't like the options on a poll, I can create a new option.
