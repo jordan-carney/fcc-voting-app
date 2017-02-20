@@ -13,7 +13,7 @@ block append body
         p #{error}
 
       form(method="post")
-        .row
+        .row.center-align
           input(
             type="hidden"
             name="_csrf"
@@ -37,8 +37,8 @@ block append body
             )
             label(for="option")
               | Option
-          #editControls
-            span#addOption + 
-            span#delOption.hide -
+          .optionControls.left-align
+            span.btn.light-green#addOption + 
+            span.btn.red#delOption.hide -
 
           button.btn.light-blue(type="submit") Create Poll

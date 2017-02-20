@@ -1,5 +1,5 @@
 body {
-  background-color: #f1f5f8;
+  background-color: #fcfcfc;
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -41,4 +41,13 @@ ul.inner-side-nav li a i {
   margin-top: -4px;
   margin-right: 4px;
   vertical-align: middle;
+}
+
+.optionControls {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.optionControls #addOption {
+  margin-right: 15px;
 }
