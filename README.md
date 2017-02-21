@@ -16,14 +16,18 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] Setup Mongo/Mongoose
 - [x] Ensure user password hash is not sent to front end
 - [x] Add endpoint for front-end to fetch poll-results data
-- [ ] Style add and remove option buttons
+- [x] Style add and remove option buttons
 - [ ] Only whole numbers on Y-axis of Bar Charts
-- [ ] Tweak background coloring
+- [x] Tweak background coloring
 - [ ] Expand poll list on home Page
 - [ ] Paginate expanded poll list on home Page
 - [x] As an authenticated user, I can delete my account
 - [x] As an authenticated user, I can edit any of my existing polls
 - [x] As an unauthenticated or authenticated user, I can only vote once in a poll
+- [ ] Move post to 'create-poll' to API
+- [ ] Move post to ':user/:pollName' to API
+- [ ] Scrap and redo the 'edit-poll' route
+- [ ] Ensure mobile responsive!
 
 ## User Stories
 - [x] As an authenticated user, I can keep my polls and come back later to access them.

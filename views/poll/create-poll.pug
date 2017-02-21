@@ -37,6 +37,16 @@ block append body
             )
             label(for="option")
               | Option
+              
+          .input-field.option
+            input(
+              type="text"
+              name="option"
+              require="true"
+            )
+            label(for="option")
+              | Option
+
           .optionControls.left-align
             span.btn.light-green#addOption + 
             span.btn.red#delOption.hide -

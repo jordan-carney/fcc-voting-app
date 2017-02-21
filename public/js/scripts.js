@@ -51,23 +51,24 @@ $(document).ready(function() {
 
     addOption.addEventListener('click', function() {
       const options = document.querySelectorAll('.option')
-      if(options.length === 10 ) addOption.classList.add('hide')
+      if((options.length + 1) === 10 ) addOption.classList.add('hide')
       if(options.length < 10) {
         delOption.classList.remove('hide')
         const lastOption = options[options.length - 1]
         const newOption = lastOption.cloneNode(true)
+        newOption.querySelector('input').value = ""
         lastOption.after(newOption)
       }
     })
     
     delOption.addEventListener('click', function() {
       const options = document.querySelectorAll('.option')
-      if(options.length === 2) delOption.classList.add('hide')
-      if(options.length > 1) {
+      if(options.length > 2) {
         addOption.classList.remove('hide')
         const lastOption = options[options.length - 1]
         lastOption.parentNode.removeChild(lastOption)
       }
+      if((options.length - 1) === 2) delOption.classList.add('hide')
     })
   }
 
