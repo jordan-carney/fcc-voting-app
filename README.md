@@ -17,7 +17,7 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] Ensure user password hash is not sent to front end
 - [x] Add endpoint for front-end to fetch poll-results data
 - [x] Style add and remove option buttons
-- [ ] Only whole numbers on Y-axis of Bar Charts
+- [x] Only whole numbers on Y-axis of Bar Charts
 - [x] Tweak background coloring
 - [ ] Expand poll list on home Page
 - [ ] Paginate expanded poll list on home Page

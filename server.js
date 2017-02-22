@@ -20,7 +20,6 @@ const pug = new Pug({
 })
 
 
-// MIDDLEWARES
 app.use(serve('./public'))
 app.use(bodyParser())
 app.keys = [process.env.SESSION_SECRET]
@@ -29,7 +28,6 @@ csrf(app)
 app.use(csrf.middleware)
 
 
-// ROUTES
 const router = require('./routes')
 app.use(router.routes())
 app.use(router.allowedMethods())
