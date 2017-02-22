@@ -20,14 +20,9 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] Only whole numbers on Y-axis of Bar Charts
 - [x] Tweak background coloring
 - [ ] Expand poll list on home Page
-- [ ] Paginate expanded poll list on home Page
 - [x] As an authenticated user, I can delete my account
 - [x] As an authenticated user, I can edit any of my existing polls
 - [x] As an unauthenticated or authenticated user, I can only vote once in a poll
-- [ ] Move post to 'create-poll' to API
-- [ ] Move post to ':user/:pollName' to API
-- [ ] Scrap and redo the 'edit-poll' route
-- [ ] Ensure mobile responsive!
 
 ## User Stories
 - [x] As an authenticated user, I can keep my polls and come back later to access them.
@@ -35,6 +30,13 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] As an authenticated user, I can see the aggregate results of my polls.
 - [x] As an authenticated user, I can delete polls that I decide I don't want anymore.
 - [x] As an authenticated user, I can create a poll with any number of possible items.
-- [ ] As an unauthenticated or authenticated user, I can see and vote on everyone's polls.
+- [x] As an unauthenticated or authenticated user, I can see and vote on everyone's polls.
 - [x] As an unauthenticated or authenticated user, I can see the results of polls in chart form. (This could be implemented using Chart.js or Google Charts.)
 - [x] As an authenticated user, if I don't like the options on a poll, I can create a new option.
+
+## Future Stories
+- [ ] Force all URLs to lowercase with canonical 301 redirects
+- [ ] Move post to 'create-poll' to API
+- [ ] Move post to ':user/:pollName' to API
+- [ ] Scrap and redo the 'edit-poll' route
+- [ ] Ensure mobile responsive!

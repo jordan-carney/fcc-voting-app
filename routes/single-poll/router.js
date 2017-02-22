@@ -4,11 +4,20 @@ const Poll = models.Poll
 const User = models.User
 
 router.get('/:user/:pollName', function *(next) {
+  // IP fix for Heroku 
+  let ipAddress = this.request.ip
+  const xip = this.headers["x-forwarded-for"];
+  if (xip){
+    ipAddress = xip
+  }
+
   try {
     const isValidUser = yield User.findOne({ userName: this.params.user })
     const thePoll = yield Poll.findOne({ title: this.params.pollName, createdBy: new RegExp('^' + this.params.user + '$', 'i') })
+    const hasVoted = thePoll.voters.some( ip => ipAddress === ip)
     this.render('poll-list/single', { 
       csrfToken: this.csrf,
+      hasVoted: hasVoted,
       poll: thePoll 
     })
   } catch (err) {
@@ -20,6 +29,7 @@ router.get('/:user/:pollName', function *(next) {
 
 // TODO: Move to API
 router.post('/:user/:pollName', function *(next) {
+  console.log(this.params)
   try {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote

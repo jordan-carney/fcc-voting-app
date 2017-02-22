@@ -3,7 +3,9 @@ const models = require('../models')
 const Poll = models.Poll
 
 router.get('/', function *(next) {
-  if (!this.session.user) { 
+  if (!this.session.user) {
+
+    // IP fix for Heroku 
     let ipAddress = this.request.ip
     const xip = this.headers["x-forwarded-for"];
     if (xip){
@@ -17,6 +19,7 @@ router.get('/', function *(next) {
       hasVoted: hasVoted,
       csrfToken: this.csrf
     })
+
   } else {
     const userPolls = yield Poll.find({ createdBy: this.session.user.userName })
     this.render('home/dashboard', {
