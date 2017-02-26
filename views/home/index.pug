@@ -5,34 +5,34 @@ block append body
   h2.center Polls
 
   if openPolls
-
-    if !hasVoted
-      .card.white
-        .card-content
-          span.card-title #{openPolls.title}
-          p Creator: #{openPolls.createdBy}
-          form(method="post")
-            input(
-              type="hidden"
-              name="_csrf"
-              value=csrfToken
-            )
-            input(
-              type="hidden"
-              name="pollID"
-              value=openPolls._id
-            )
-            each option, i in openPolls.options
-              .input-field
-                input(name="vote" value=option.title type="radio" id='option-'+i )
-                label(for='option-'+i) #{option.title}
-        .card-action
-          button.btn#submit-vote Submit Vote
-    else
-      .card.white
-        .card-content
-          span.card-title #{openPolls.title}
-          p Creator: #{openPolls.createdBy}
-          canvas#test(data-src=openPolls._id)
+    each poll, i in openPolls
+      if !poll.hasVoted
+        .card.white
+          .card-content
+            span.card-title #{poll.title}
+            p Creator: #{poll.createdBy}
+            form(method="post")
+              input(
+                type="hidden"
+                name="_csrf"
+                value=csrfToken
+              )
+              input(
+                type="hidden"
+                name="pollID"
+                value=poll._id
+              )
+              each option, i in poll.options
+                .input-field
+                  input(name="vote" value=option.title type="radio" id='option-'+i )
+                  label(for='option-'+i) #{option.title}
+          .card-action
+            button.btn#submit-vote Submit Vote
+      else
+        .card.white
+          .card-content
+            span.card-title #{poll.title}
+            p Creator: #{poll.createdBy}
+            canvas.poll-results(data-src=poll._id)
   else
     p.center There are no polls available.

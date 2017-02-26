@@ -1,8 +1,9 @@
 extends ../base
 
 block append body
+
   h2.header.center Vote
-  p #{hasVoted}
+  
   if !hasVoted
     .card.white
       .card-content
@@ -30,4 +31,4 @@ block append body
       .card-content
         span.card-title #{poll.title}
         p Creator: #{poll.createdBy}
-        canvas#test(data-src=poll._id)
+        canvas.poll-results(data-src=poll._id)

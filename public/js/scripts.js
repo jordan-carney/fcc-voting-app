@@ -73,18 +73,20 @@ $(document).ready(function() {
   }
 
   // Render bar chart for poll results
-  let pollId = document.querySelector('#test')
-  if (pollId) {
-    pollId = pollId.getAttribute('data-src')
+  const polls = document.querySelectorAll('.poll-results')
 
-    fetch('/api/poll-results/' + pollId)
-      .then( response => response.json() )
-      .then( data => graphResults(data) )
+  if (polls && polls.length) {
+    polls.forEach( poll => {
+      const pollId = poll.getAttribute('data-src')
+
+      fetch('/api/poll-results/' + pollId)
+        .then( response => response.json() )
+        .then( data => graphResults(data, poll) )
+    })
   }
 
-  function graphResults(data) {
-    const ctx = document.getElementById("test")
-    const myChart = new Chart(ctx, {
+  function graphResults(data, poll) {
+    const myChart = new Chart(poll, {
         type: 'bar',
         data: {
             labels: data.options.map( option => option.title ),

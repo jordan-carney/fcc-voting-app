@@ -12,11 +12,12 @@ router.get('/', function *(next) {
       ipAddress = xip
     }
 
-    const openPolls = yield Poll.findOne()
-    const hasVoted = openPolls.voters.some( ip => ipAddress === ip)
+    const openPolls = yield Poll.find()
+    openPolls.forEach( poll => {
+      poll.hasVoted = poll.voters.some( ip => ipAddress === ip)
+    })
     this.render('home', { 
       openPolls: openPolls,
-      hasVoted: hasVoted,
       csrfToken: this.csrf
     })
 
@@ -39,19 +40,12 @@ router.post('/', function *(next) {
 
   let ipAddress = this.request.ip
   const xip = this.headers["x-forwarded-for"];
-    if (xip){
-      ipAddress = xip
-    }
+  if (xip){
+    ipAddress = xip
+  }
 
   yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
-  //Redirect to that poll's dedicated page
-  const openPolls = yield Poll.findOne()
-  const hasVoted = openPolls.voters.some( ip => this.request.ip === ip)
-  this.render('home', {
-    openPolls: openPolls,
-    hasVoted: hasVoted,
-    csrfToken: this.csrf
-  })
+  this.redirect('/')
 
   yield next
 })
