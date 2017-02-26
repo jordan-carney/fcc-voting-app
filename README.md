@@ -35,6 +35,7 @@ https://jc-fcc-vote.herokuapp.com/
 - [x] As an authenticated user, if I don't like the options on a poll, I can create a new option.
 
 ## Future Stories
+- [ ] Allow login with email or username
 - [ ] Force all URLs to lowercase with canonical 301 redirects
 - [ ] Move post to 'create-poll' to API
 - [ ] Move post to ':user/:pollName' to API
