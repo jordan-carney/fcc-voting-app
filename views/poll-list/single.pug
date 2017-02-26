@@ -2,6 +2,7 @@ extends ../base
 
 block append body
   h2.header.center Vote
+  p #{hasVoted}
   if !hasVoted
     .card.white
       .card-content

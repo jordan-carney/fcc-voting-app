@@ -29,11 +29,19 @@ router.get('/:user/:pollName', function *(next) {
 
 // TODO: Move to API
 router.post('/:user/:pollName', function *(next) {
-  console.log(this.params)
+  const pollID = this.request.body.pollID
+  const vote = this.request.body.vote
+
+  let ipAddress = this.request.ip
+  const xip = this.headers["x-forwarded-for"];
+    if (xip){
+      ipAddress = xip
+    }
+
   try {
     const pollID = this.request.body.pollID
     const vote = this.request.body.vote
-    yield Poll.update({_id: pollID, 'options.title': vote}, {$inc: {'options.$.votes': 1}})
+    yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
     //Redirect to that poll's dedicated page
     this.redirect('/' + this.params.user + '/' + this.params.pollName)
   } catch(err) {
