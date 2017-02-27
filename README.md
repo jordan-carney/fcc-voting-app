@@ -3,6 +3,9 @@
 **Demo**
 https://jc-fcc-vote.herokuapp.com/
 
+**FCC Brief**
+https://www.freecodecamp.com/challenges/build-a-voting-app
+
 ## TODO
 - [x] Setup User Authentication
   - [x] Client Sessions
