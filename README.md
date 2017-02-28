@@ -22,7 +22,7 @@ https://www.freecodecamp.com/challenges/build-a-voting-app
 - [x] Style add and remove option buttons
 - [x] Only whole numbers on Y-axis of Bar Charts
 - [x] Tweak background coloring
-- [ ] Expand poll list on home Page
+- [x] Expand poll list on home Page
 - [x] As an authenticated user, I can delete my account
 - [x] As an authenticated user, I can edit any of my existing polls
 - [x] As an unauthenticated or authenticated user, I can only vote once in a poll
@@ -43,4 +43,4 @@ https://www.freecodecamp.com/challenges/build-a-voting-app
 - [ ] Move post to 'create-poll' to API
 - [ ] Move post to ':user/:pollName' to API
 - [ ] Scrap and redo the 'edit-poll' route
-- [ ] Ensure mobile responsive!
+- [ ] Ensure mobile responsiveness
