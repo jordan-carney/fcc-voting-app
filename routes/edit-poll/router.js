@@ -3,10 +3,10 @@ const models = require('../../models')
 const Poll = models.Poll
 
 
-// TODO: Redo this whole thing...
-router.post('/edit-poll', function *(next) {
+router.get('/edit-poll/:pollId', function *(next) {
   try {
-    const poll = yield Poll.findById(this.request.body.pollID)
+    const poll = yield Poll.findById(this.params.pollId)
+
     this.render('poll/edit-poll', {
       user: this.session.user,
       poll: poll,
@@ -18,6 +18,7 @@ router.post('/edit-poll', function *(next) {
 
   yield next
 })
+
 
 // TODO : move this to private middleware behind data check in /edit-poll route
 router.post('/update-poll', function *(next) {

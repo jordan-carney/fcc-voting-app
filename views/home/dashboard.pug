@@ -21,8 +21,8 @@ block append body
               each option in poll.options
                 p #{option.title} - #{option.votes}
             .card-action(data-poll=poll._id)
-              a.edit-poll(href="javascript:void(0);" title="Edit Poll") Edit Poll
-              a(href='/' + user.userName + '/' + poll.title) Share Poll
+              a.edit-poll(href="edit-poll/" + poll._id title="Edit Poll") Edit Poll
+              a(href='/vote/' + user.userName + '/' + poll.title) View Poll
               a.right.red-text.text-darken-1.delete-poll(href="javascript:void(0);" title="Delete Poll") Delete Poll
               form(method="POST" action="")
                 input(

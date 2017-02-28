@@ -4,7 +4,7 @@ const Poll = models.Poll
 
 router.get('/', function *(next) {
   const ipAddress = this.request.ipAddress
-
+  
   if (!this.session.user) {
     const openPolls = yield Poll.find()
     openPolls.forEach( poll => {

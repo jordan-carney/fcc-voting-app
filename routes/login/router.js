@@ -5,9 +5,13 @@ const Poll = models.Poll
 const User = models.User
 
 router.get('/login', function *(next) {
-  this.render('login', { 
-    csrfToken: this.csrf 
-  })
+  if (this.session.user) {
+    this.redirect('/')
+  } else {
+    this.render('login', { 
+      csrfToken: this.csrf 
+    })
+  }
 
   yield next
 })
@@ -29,9 +33,9 @@ router.post('/login', function *(next) {
         1) Set password field in the Model to select: false. Default query will never return this property, unless specifically
             called (ex: '+password') as an argument after the query.
         2) Convert the returned MongooseDocument to a raw object with .toObject() OR chain .lean() on to the query.
-            ----
+            
             this.session.user = user.toObject();
-            ----
+            
         */
         this.session.user = user
         delete this.session.user.password

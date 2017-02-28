@@ -18,7 +18,7 @@ block append body
         p #{error}
 
       form(method="post" action="/update-poll")
-        .row
+        .row.center-align
           input(
             type="hidden"
             name="_csrf"
@@ -42,7 +42,7 @@ block append body
               | Title
           
           each option in poll.options
-            .input-field
+            .input-field.option
               input(
                 type="text"
                 name="options"
@@ -57,5 +57,9 @@ block append body
               )
               label(for="option")
                 | Option
+
+          .optionControls.left-align
+            span.btn.light-green#addOption + 
+            span.btn.red#delOption -
 
           button.btn.light-blue(type="submit") Edit Poll

@@ -2,7 +2,7 @@ const router = require('koa-router')()
 const models = require('../../models')
 const Poll = models.Poll
 
-router.get('/:user', function *(next) {
+router.get('/vote/:user', function *(next) {
   const ipAddress = this.request.ipAddress
   const polls = yield Poll.find({ createdBy: new RegExp('^' + this.params.user + '$', 'i') })
   if (polls.length) {
@@ -11,14 +11,15 @@ router.get('/:user', function *(next) {
     })
     this.render('poll-list/user', {
       csrfToken: this.csrf,
-      openPolls: polls
+      openPolls: polls,
+      user: (this.session.user) ? this.session.user : ''
     })
   }
 
   yield next
 })
 
-router.post('/:user', function *(next) {
+router.post('/vote/:user', function *(next) {
   const pollID = this.request.body.pollID
   const vote = this.request.body.vote
   const ipAddress = this.request.ipAddress
@@ -28,7 +29,7 @@ router.post('/:user', function *(next) {
     const vote = this.request.body.vote
     yield Poll.update({_id: pollID, 'options.title': vote, 'voters': {$nin: [ipAddress]}}, {$inc: {'options.$.votes': 1}, $addToSet: {'voters': ipAddress}})
     //Redirect to that poll's dedicated page
-    this.redirect('/' + this.params.user)
+    this.redirect('/vote/' + this.params.user)
   } catch(err) {
     console.log(err)
   }

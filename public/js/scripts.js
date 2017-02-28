@@ -45,9 +45,11 @@ $(document).ready(function() {
   }
 
   // Add/Remove Options during poll creation and editing
-  if (window.location.pathname === '/create-poll' || window.location.pathname === '/edit-poll') {
+  if (window.location.pathname === '/create-poll' || window.location.pathname.includes('/edit-poll')) {
     const addOption = document.querySelector('#addOption')
     const delOption = document.querySelector('#delOption')
+
+    if (document.querySelectorAll('.option').length <= 2) delOption.classList.add('hide')
 
     addOption.addEventListener('click', function() {
       const options = document.querySelectorAll('.option')
