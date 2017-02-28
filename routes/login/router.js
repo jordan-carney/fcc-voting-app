@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const bcrypt = require('bcrypt')
-const models = require('../models')
+const models = require('../../models')
 const Poll = models.Poll
 const User = models.User
 

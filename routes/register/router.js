@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const bcrypt = require('bcrypt')
-const models = require('../models')
+const models = require('../../models')
 const User = models.User
 
 router.get('/register', function *(next) {

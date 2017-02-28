@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const models = require('../../models')
+const models = require('../../../models')
 const Poll = models.Poll
 
 router.post('/delete-poll', function *(next) {
