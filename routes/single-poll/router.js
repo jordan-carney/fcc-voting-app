@@ -4,12 +4,7 @@ const Poll = models.Poll
 const User = models.User
 
 router.get('/:user/:pollName', function *(next) {
-  // IP fix for Heroku 
-  let ipAddress = this.request.ip
-  const xip = this.headers["x-forwarded-for"];
-  if (xip){
-    ipAddress = xip
-  }
+  const ipAddress = this.request.ipAddress
 
   try {
     const isValidUser = yield User.findOne({ userName: this.params.user })
@@ -31,12 +26,7 @@ router.get('/:user/:pollName', function *(next) {
 router.post('/:user/:pollName', function *(next) {
   const pollID = this.request.body.pollID
   const vote = this.request.body.vote
-
-  let ipAddress = this.request.ip
-  const xip = this.headers["x-forwarded-for"];
-    if (xip){
-      ipAddress = xip
-    }
+  const ipAddress = this.request.ipAddress
 
   try {
     const pollID = this.request.body.pollID
