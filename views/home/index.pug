@@ -22,10 +22,10 @@ block append body
                 name="pollID"
                 value=poll._id
               )
-              each option, i in poll.options
+              each option, x in poll.options
                 .input-field
-                  input(name="vote" value=option.title type="radio" id='option-'+i )
-                  label(for='option-'+i) #{option.title}
+                  input(name="vote" value=option.title type="radio" id='option-'+x+i )
+                  label(for='option-'+x+i) #{option.title}
           .card-action
             button.btn#submit-vote Submit Vote
       else
