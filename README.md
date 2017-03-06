@@ -1,7 +1,8 @@
 # Free Code Camp - Voting app
 
 **Demo**
-https://jc-fcc-vote.herokuapp.com/
+https://jc-fcc-vote.herokuapp.com/  
+Can be a little slow to load at first due to free hosting on Heroku.
 
 **FCC Brief**
 https://www.freecodecamp.com/challenges/build-a-voting-app

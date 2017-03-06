@@ -1,7 +1,6 @@
 const router = require('koa-router')()
 
-
-router.get('/logout', function *(next) {
+router.get('/logout', function* getLogout(next) {
   this.session = null
   this.redirect('/')
 

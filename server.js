@@ -1,6 +1,4 @@
-'use-strict'
-
-if ( process.env.NODE_ENV !== 'production' ) require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const session = require('koa-session')
 const bodyParser = require('koa-bodyparser')
@@ -15,7 +13,7 @@ const pug = new Pug({
   pretty: false,
   compileDebug: false,
   locals: '',
-  app: app,
+  app,
 })
 
 

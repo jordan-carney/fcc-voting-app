@@ -1,9 +1,9 @@
 const router = require('koa-router')()
 
-router.use( function* (next) {
+router.use(function* captureIPAddress(next) {
   // Get IP address with Fix for Heroku
-  const xip = this.headers["x-forwarded-for"]
-  this.request.ipAddress = (xip) ? xip : this.request.ip
+  const xip = this.headers['x-forwarded-for']
+  this.request.ipAddress = (xip) || this.request.ip
 
   yield next
 })

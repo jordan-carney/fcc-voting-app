@@ -1,12 +1,13 @@
 const router = require('koa-router')()
 const models = require('../../models')
+
 const User = models.User
 
-router.get('/account', function *(next) {
+router.get('/account', function* getAccount(next) {
   if (this.session.user) {
     this.render('account', {
       csrfToken: this.csrf,
-      user: this.session.user 
+      user: this.session.user,
     })
   } else {
     this.redirect('/')
@@ -16,7 +17,7 @@ router.get('/account', function *(next) {
 })
 
 
-router.post('/account', function *(next) {
+router.post('/account', function* postAccount(next) {
   try {
     yield User.findOneAndRemove({ userName: this.session.user.userName })
     this.session = null
